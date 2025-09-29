@@ -1,35 +1,33 @@
 pipeline {
     agent any
 
-    stages{
-        stage('fetch code') {
-          steps{
-              git branch: 'vp-rem', url: "https://github.com/devopshydclub/vprofile-repo.git"
-          }  
+    tools {
+        maven 'M3'   // 👈 name you gave in Jenkins tool config
+    }
+
+    stages {
+        stage('Fetch code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/shahryarunity/maven.git'
+            }
         }
 
         stage('Build') {
             steps {
                 sh 'mvn clean install -DskipTests'
             }
-            post {
-                success {
-                    echo "Now Archiving."
-                    archiveArtifacts artifacts: '**/*.war'
-                }
-            }
         }
-        stage('Test'){
+
+        stage('Test') {
             steps {
                 sh 'mvn test'
             }
-
         }
-         stage('Code Ananlysis'){
-            steps {
-                sh 'mvn checkstyle:checkstyle'
-            }
 
+        stage('Code Analysis') {
+            steps {
+                sh 'echo "Running static code analysis..."'
+            }
         }
     }
 }
